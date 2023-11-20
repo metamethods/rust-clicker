@@ -1,39 +1,39 @@
 <script lang="ts">
-  import Greet from './lib/Greet.svelte'
-</script>
+  import { invoke } from "@tauri-apps/api/tauri";
+  import { listen } from "@tauri-apps/api/event";
 
-<main class="container">
-  <h1>Welcome to Tauri!</h1>
+  import Options from "./lib/Options.svelte";
+  import Actions from "./lib/Actions.svelte";
 
-  <div class="row">
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo vite" alt="Vite Logo" />
-    </a>
-    <a href="https://tauri.app" target="_blank">
-      <img src="/tauri.svg" class="logo tauri" alt="Tauri Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank">
-      <img src="/svelte.svg" class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
+  import active from "./lib/active";
+  import options from "./lib/options";
 
-  <p>
-    Click on the Tauri, Vite, and Svelte logos to learn more.
-  </p>
-
-  <div class="row">
-    <Greet />
-  </div>
-
-
-</main>
-
-<style>
-  .logo.vite:hover {
-    filter: drop-shadow(0 0 2em #747bff);
+  async function syncActive() {
+    $active = await invoke<boolean>("status_clicker");
   }
 
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00);
+  listen("click:start", async () => {
+    if ($active) return;
+    await invoke("clicker_start", $options);
+    syncActive();
+  });
+
+  listen("click:stop", async () => {
+    if (!$active) return;
+    await invoke("clicker_stop");
+    syncActive();
+  });
+</script>
+
+<main>
+  <Options />
+  <Actions />
+</main>
+
+<style lang="scss">
+  main {
+    @apply flex flex-col justify-between gap-2;
+    @apply p-2;
+    @apply h-screen;
   }
 </style>
