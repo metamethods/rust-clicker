@@ -15,13 +15,13 @@
   listen("click:start", async () => {
     if ($active) return;
     await invoke("clicker_start", $options);
-    syncActive();
+    await syncActive();
   });
 
   listen("click:stop", async () => {
     if (!$active) return;
     await invoke("clicker_stop");
-    syncActive();
+    await syncActive();
   });
 </script>
 
