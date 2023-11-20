@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { 
+  @apply bg-zinc-950 text-white; 
+  
+  font-family: 'montserrat';
+}
+
+input, select { 
+  @apply bg-zinc-900;
+  @apply rounded-md; 
+  @apply px-2 py-1;
+  @apply outline-none;
+  @apply appearance-none;
+}
+
+@font-face {
+  font-family: 'montserrat';
+  src: url('./montserrat.ttf') format('truetype');
+}
