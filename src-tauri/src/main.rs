@@ -1,13 +1,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use inputbot::{KeySequence, KeybdKey::{*, self}, MouseButton::*};
 use std::{thread::{sleep, self}, time::Duration};
 use lazy_static::lazy_static;
-use std::sync::Mutex;
+use std::sync::{Mutex, Arc};
 
 lazy_static! {
   static ref CLICKER_STATUS: Mutex<bool> = Mutex::new(false);
 }
+
+#[derive(Clone, serde::Serialize)]
+struct Payload {}
 
 #[tauri::command]
 fn clicker_start(delay: i64, hotkey: u64, click_type: &str, click_count: i8) {
@@ -27,12 +29,18 @@ fn status_clicker() -> bool {
 }
 
 fn main() {
-  // Start detecting input events
-  thread::spawn(|| inputbot::handle_input_events());
-
-  // Launch the app
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![clicker_start, clicker_stop, status_clicker])
+    .setup(|app| {
+      // match *CLICKER_STATUS.lock().unwrap() {
+      //   true => app.emit_all("click:start", Payload{}),
+      //   false => app.emit_all("click:stop", Payload{})
+      // };
+      
+      // use app.emit_all("click:start", Payload{}); to emit to start a clicker
+      // use app.emit_all("click:stop", Payload{}); to emit to stop a clicker
+      Ok(())
+    })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

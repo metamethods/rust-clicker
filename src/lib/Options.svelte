@@ -1,13 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import KeyMap from "./keymap";
-
-  import Hotkey from "./Hotkey.svelte";
-
   import options from "./options";
-
-  let hotkey: number = KeyMap.F6;
 
   function clamp(value: number, minimum: number, maximum: number) {
     return Math.min(Math.max(value, minimum), maximum);
@@ -24,7 +18,7 @@
     const clickType = getValue("clickType") as "left" | "middle" | "right";
     const clickCount = clamp(Math.floor(Number(getValue("clickCount"))), 1, 100);
 
-    options.set({ hotkey, delay, clickType, clickCount });
+    options.set({ delay, clickType, clickCount });
   }
 
   onMount(() => {
@@ -35,8 +29,7 @@
 <form on:change|preventDefault={parameterChanged} on:submit|preventDefault={()=>{}}>
   <section>
     <label for="hotkey">Hotkey</label>
-    <!-- <button class="hotkey" id="hotkey" placeholder="Hotkey" value="1920">Hotkey Assignment: None</button> -->
-    <Hotkey bind:key={hotkey} />
+    <button class="hotkey" id="hotkey" placeholder="Hotkey">F6</button>
   </section>
 
   <section>
@@ -73,10 +66,11 @@
   }
 
   .hotkey {
-    @apply bg-zinc-900;
+    @apply bg-zinc-900/50;
     @apply rounded-md;
     @apply px-2 py-1;
     @apply text-left;
+    @apply cursor-auto;
   }
 
   // Removes the up/down arrows from number inputs
