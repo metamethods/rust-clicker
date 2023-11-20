@@ -12,8 +12,8 @@ lazy_static! {
 struct Payload {}
 
 #[tauri::command]
-fn clicker_start(delay: i64, hotkey: u64, click_type: &str, click_count: i8) {
-  println!("Starting clicker with delay: {}, hotkey: {}, click_type: {}, click_count: {}", delay, hotkey, click_type, click_count);
+fn clicker_start(delay: i64, click_type: &str, click_count: i8) {
+  println!("Starting clicker with delay: {}, click_type: {}, click_count: {}", delay, click_type, click_count);
   *CLICKER_STATUS.lock().unwrap() = true;
 }
 
